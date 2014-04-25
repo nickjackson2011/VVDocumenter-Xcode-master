@@ -21,6 +21,7 @@ This plug-in is developed and tested in Mac OSX 10.8.5 Xcode 5. **The master bra
 
 ## How to get XCode UUID
 To get uuid for default xcode in your system, execute this in console
+
 `defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID`
 ## 
 
