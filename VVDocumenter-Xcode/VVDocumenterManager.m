@@ -14,6 +14,12 @@
 #import "VVDSettingPanelWindowController.h"
 #import "VVDocumenterSetting.h"
 
+#import "NSLineString.h"
+
+typedef enum CopyDirection {
+	CD_UP = 1, CD_DOWN
+} CopyDirection;
+
 @interface VVDocumenterManager()
 @property (nonatomic, strong) id eventMonitor;
 @property (nonatomic, assign) BOOL prefixTyped;
@@ -55,16 +61,148 @@
 
 -(void) addSettingMenu
 {
-    NSMenuItem *editMenuItem = [[NSApp mainMenu] itemWithTitle:@"Window"];
-    if (editMenuItem) {
-        [[editMenuItem submenu] addItem:[NSMenuItem separatorItem]];
+    NSMenuItem *windowMenuItem = [[NSApp mainMenu] itemWithTitle:@"Window"];
+    if (windowMenuItem) {
+        [[windowMenuItem submenu] addItem:[NSMenuItem separatorItem]];
         
         NSMenuItem *newMenuItem = [[NSMenuItem alloc] initWithTitle:@"VVDocumenter" action:@selector(showSettingPanel:) keyEquivalent:@""];
         
         [newMenuItem setTarget:self];
-        [[editMenuItem submenu] addItem:newMenuItem];
+        [[windowMenuItem submenu] addItem:newMenuItem];
+    }
+    
+    NSMenuItem *editMenuItem = [[NSApp mainMenu] itemWithTitle:@"Edit"];
+    if (editMenuItem) {
+        [[editMenuItem submenu] addItem:[NSMenuItem separatorItem]];
+        NSMenuItem *item = nil;
+
+        UniChar a;
+        a		= 63232;
+        item	= [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"Copy line up" action:@selector(copyLineUp:) keyEquivalent:[NSString stringWithCharacters:&a length:1]];
+        [item setKeyEquivalentModifierMask:(NSControlKeyMask | NSAlternateKeyMask)];
+        [item setTarget:self];
+        [[editMenuItem submenu] addItem:item];
+        a		= 63233;
+        item	= [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"Copy line down" action:@selector(copyLineDown:) keyEquivalent:[NSString stringWithCharacters:&a length:1]];
+        [item setKeyEquivalentModifierMask:(NSControlKeyMask | NSAlternateKeyMask)];
+        [item setTarget:self];
+        [[editMenuItem submenu] addItem:item];
+        item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"Delete line" action:@selector(deleteLine:) keyEquivalent:@"-"];
+        [item setKeyEquivalentModifierMask:(NSCommandKeyMask)];
+        [item setTarget:self];
+        [[editMenuItem submenu] addItem:item];
     }
 }
+
+#pragma mark - Copy line
+- (void)copyLine:(CopyDirection)direction
+{
+	NSWindow	*nsKeyWindow	= [[NSApplication sharedApplication] keyWindow];
+	NSResponder *responder		= [nsKeyWindow firstResponder];
+	NSString	*resname		= [[responder class] description];
+    
+	if (![resname isEqualToString:@"DVTSourceTextView"]) {
+		return;
+	}
+    
+	NSTextView		*tv		= (NSTextView *)responder;
+	NSRange			range	= tv.selectedRange;
+	NSLineString	*ls		= [NSLineString lineStringWith:[[tv textStorage] string]];
+	NSUInteger		cline	= [ls lineOfLocation:range.location];
+    
+	NSString	*ltext;
+	NSRange		srg;
+    
+	if (range.length > 0) {
+		if ('\n' == [ls.targetStr characterAtIndex:range.location + range.length - 1]) {
+			range.length -= 1;
+		}
+        
+		NSRange srange	= [ls rangeOfLineNumber:[ls lineOfLocation:range.location]];
+		NSRange erange	= [ls rangeOfLineNumber:[ls lineOfLocation:(range.location + range.length)]];
+		range	= NSMakeRange(srange.location, erange.location + erange.length + 1 - srange.location);
+		ltext	= [ls.targetStr substringWithRange:range];
+        
+		if (direction == CD_UP) {
+			srg = range;
+		} else {
+			srg = NSMakeRange(range.length + range.location, ltext.length);
+		}
+        
+		range = NSMakeRange(range.length + range.location, 0);
+	} else {
+		ltext			= [[ls stringOfLineNumber:cline] stringByAppendingString:@"\n"];
+		range			= [ls rangeOfLineNumber:cline];
+		range.location	= range.location + range.length + 1;
+		range.length	= 0;
+        
+		if (direction == CD_UP) {
+			srg = tv.selectedRange;
+		} else {
+			srg = NSMakeRange(range.length + range.location + ltext.length - 1, 0);
+		}
+	}
+    
+	[tv insertText:ltext replacementRange:range];
+	tv.selectedRange = srg;
+}
+
+- (void)copyLineUp:(id)sender
+{
+	@synchronized(self) {
+		@try {
+			[self copyLine:CD_UP];
+		}
+		@catch(NSException *exception) {
+			NSLog(@"copy line up error:%@", [exception debugDescription]);
+		}
+	}
+}
+
+- (void)copyLineDown:(id)sender
+{
+	@synchronized(self) {
+		@try {
+			[self copyLine:CD_DOWN];
+		}
+		@catch(NSException *exception) {
+			NSLog(@"copy line up error:%@", [exception debugDescription]);
+		}
+	}
+}
+
+#pragma mark - Delete line
+- (void)deleteLine:(id)sender
+{
+	NSWindow	*nsKeyWindow	= [[NSApplication sharedApplication] keyWindow];
+	NSResponder *responder		= [nsKeyWindow firstResponder];
+	NSString	*resname		= [[responder class] description];
+    
+	if (![resname isEqualToString:@"DVTSourceTextView"]) {
+		return;
+	}
+    
+	NSTextView		*tv		= (NSTextView *)responder;
+	NSRange			range	= tv.selectedRange;
+	NSLineString	*ls		= [NSLineString lineStringWith:[[tv textStorage] string]];
+	NSUInteger		cline	= [ls lineOfLocation:range.location];
+    
+	if (range.length > 0) {
+		if ('\n' == [ls.targetStr characterAtIndex:range.location + range.length - 1]) {
+			range.length -= 1;
+		}
+        
+		NSRange srange	= [ls rangeOfLineNumber:[ls lineOfLocation:range.location]];
+		NSRange erange	= [ls rangeOfLineNumber:[ls lineOfLocation:(range.location + range.length)]];
+		range = NSMakeRange(srange.location, erange.location + erange.length + 1 - srange.location);
+	} else {
+		range = [ls rangeOfLineNumber:cline];
+		range.length++;
+	}
+    
+	[tv insertText:@"" replacementRange:range];
+}
+
 
 -(void) showSettingPanel:(NSNotification *)noti {
     self.settingPanel = [[VVDSettingPanelWindowController alloc] initWithWindowNibName:@"VVDSettingPanelWindowController"];
