@@ -389,7 +389,7 @@
 			name = VVDocumenterTests;
 			productName = VVDocumenterTests;
 			productReference = D1C462DA17999C2000EB7B23 /* VVDocumenterTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
