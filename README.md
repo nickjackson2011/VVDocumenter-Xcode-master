@@ -83,3 +83,10 @@ VVDocumenter is published under MIT License
 
 You may want to see more great open source projects brought you by Chinese developers. See more in the [Projects repo](https://github.com/OpenSourceChina/Projects) of [OpenSourceChina](https://github.com/OpenSourceChina).
 
+
+Additional Functions
+
+    Ctrol + Alt + ↑ 向上复制光标所在行
+    Ctrol + Alt + ↓ 向下复制光标所在行
+    Command + -     删除光标所在行
+
