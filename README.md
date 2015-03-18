@@ -89,4 +89,6 @@ Additional Functions
     Ctrol + Alt + ↑ 向上复制光标所在行
     Ctrol + Alt + ↓ 向下复制光标所在行
     Command + -     删除光标所在行
-
+    
+KeyBinding
+    search "Show Document Items" change to "alt+o"
