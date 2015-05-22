@@ -71,26 +71,35 @@ typedef enum CopyDirection {
         [[windowMenuItem submenu] addItem:newMenuItem];
     }
     
+    //add additional menu
     NSMenuItem *editMenuItem = [[NSApp mainMenu] itemWithTitle:@"Edit"];
     if (editMenuItem) {
-        [[editMenuItem submenu] addItem:[NSMenuItem separatorItem]];
+        NSMenu *submenu = [[NSMenu alloc] init];
         NSMenuItem *item = nil;
 
         UniChar a;
         a		= 63232;
-        item	= [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"Copy line up" action:@selector(copyLineUp:) keyEquivalent:[NSString stringWithCharacters:&a length:1]];
+        item	= [[NSMenuItem alloc] initWithTitle:@"Copy line up" action:@selector(copyLineUp:) keyEquivalent:[NSString stringWithCharacters:&a length:1]];
         [item setKeyEquivalentModifierMask:(NSControlKeyMask | NSAlternateKeyMask)];
         [item setTarget:self];
-        [[editMenuItem submenu] addItem:item];
+        [submenu addItem:item];
+        
         a		= 63233;
-        item	= [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"Copy line down" action:@selector(copyLineDown:) keyEquivalent:[NSString stringWithCharacters:&a length:1]];
+        item	= [[NSMenuItem alloc] initWithTitle:@"Copy line down" action:@selector(copyLineDown:) keyEquivalent:[NSString stringWithCharacters:&a length:1]];
         [item setKeyEquivalentModifierMask:(NSControlKeyMask | NSAlternateKeyMask)];
         [item setTarget:self];
-        [[editMenuItem submenu] addItem:item];
-        item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:@"Delete line" action:@selector(deleteLine:) keyEquivalent:@"-"];
+        [submenu addItem:item];
+        
+        item = [[NSMenuItem alloc] initWithTitle:@"Delete line" action:@selector(deleteLine:) keyEquivalent:@"-"];
         [item setKeyEquivalentModifierMask:(NSCommandKeyMask)];
         [item setTarget:self];
-        [[editMenuItem submenu] addItem:item];
+        [submenu addItem:item];
+        
+        NSMenuItem *vvdocumentMenuItem = [[NSMenuItem alloc] initWithTitle:@"VVDocument" action:NULL keyEquivalent:@""];
+        [vvdocumentMenuItem setSubmenu:submenu];
+        
+        [[editMenuItem submenu] addItem:[NSMenuItem separatorItem]];
+        [[editMenuItem submenu] addItem:vvdocumentMenuItem];
     }
 }
 
