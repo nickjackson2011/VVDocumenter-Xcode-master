@@ -92,3 +92,6 @@ Additional Functions
     
 KeyBinding
     search "Show Document Items" change to "alt+o"
+
+Reset XCode 6.4 plugin load setting:
+'defaults delete com.apple.dt.Xcode DVTPlugInManagerNonApplePlugIns-Xcode-6.4'
