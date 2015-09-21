@@ -1,6 +1,18 @@
 # VVDocumenter-Xcode [![Build Status](https://api.travis-ci.org/onevcat/VVDocumenter-Xcode.png)](https://travis-ci.org/onevcat/VVDocumenter-Xcode) <a href="https://flattr.com/submit/auto?user_id=onevcat&url=https%3A%2F%2Fgithub.com%2Fonevcat%2FVVDocumenter-Xcode" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
 ---
 
+## 升级Xcode之后快速更新插件方法
+
+1.修改plist文件中的UUID
+
+`sudo find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist -maxdepth 3 | xargs -I{} defaults write {} DVTPlugInCompatibilityUUIDs -array-add `\``defaults read /Applications/Xcode.app/Contents/Info.plist DVTPlugInCompatibilityUUID``
+
+2.Reset XCode 7.0 plugin load setting:
+
+`defaults delete com.apple.dt.Xcode DVTPlugInManagerNonApplePlugIns-Xcode-7.0`
+
+---
+
 ## What is this?
 
 Writing document is so important for developing, but it is really painful with Xcode. Think about how much time you are wasting in pressing '*' or '/', and typing the parameters again and again. Now, you can find the method (or any code) you want to document to, and type in `///`, the document will be generated for you and all params and return will be extracted into a Javadoc style, which is compatible with [appledoc](https://github.com/tomaz/appledoc), [Doxygen](http://www.stack.nl/~dimitri/doxygen/) and [HeaderDoc](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/HeaderDoc/intro/intro.html). You can just fill the inline placeholder tokens to finish your document.
@@ -78,13 +90,7 @@ VVDocumenter is published under MIT License
     COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
     IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    
-## More Incredible Projects from OpenSourceChina
-
-You may want to see more great open source projects brought you by Chinese developers. See more in the [Projects repo](https://github.com/OpenSourceChina/Projects) of [OpenSourceChina](https://github.com/OpenSourceChina).
-
-
-Additional Functions
+## Additional Functions
 
     Ctrol + Alt + ↑ 向上复制光标所在行
     Ctrol + Alt + ↓ 向下复制光标所在行
@@ -92,13 +98,10 @@ Additional Functions
     
 KeyBinding
     search "Show Document Items" change to "alt+o"
+    
+## More Incredible Projects from OpenSourceChina
 
-## 升级Xcode之后快速更新插件方法
+You may want to see more great open source projects brought you by Chinese developers. See more in the [Projects repo](https://github.com/OpenSourceChina/Projects) of [OpenSourceChina](https://github.com/OpenSourceChina).
 
-1.修改plist文件中的UUID
 
-`sudo find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist -maxdepth 3 | xargs -I{} defaults write {} DVTPlugInCompatibilityUUIDs -array-add `\``defaults read /Applications/Xcode.app/Contents/Info.plist DVTPlugInCompatibilityUUID``
 
-2.Reset XCode 7.0 plugin load setting:
-
-`defaults delete com.apple.dt.Xcode DVTPlugInManagerNonApplePlugIns-Xcode-7.0`
