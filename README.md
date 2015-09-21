@@ -97,6 +97,7 @@ VVDocumenter is published under MIT License
     Command + -     删除光标所在行
     
 KeyBinding
+
     search "Show Document Items" change to "alt+o"
     
 ## More Incredible Projects from OpenSourceChina
