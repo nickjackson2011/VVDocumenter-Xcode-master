@@ -93,7 +93,7 @@ Additional Functions
 KeyBinding
     search "Show Document Items" change to "alt+o"
 
-## 快速更新插件方法
+## 升级Xcode之后快速更新插件方法
 
 1.修改plist文件中的UUID
 
