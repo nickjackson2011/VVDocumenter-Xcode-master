@@ -93,6 +93,10 @@ Additional Functions
 KeyBinding
     search "Show Document Items" change to "alt+o"
 
-Reset XCode 6.4 plugin load setting:
+快速更新插件方法:
+1.修改plist文件中的UUID
+`sudo find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist -maxdepth 3 | xargs -I{} defaults write {} DVTPlugInCompatibilityUUIDs -array-add \`defaults read /Applications/Xcode.app/Contents/Info.plist DVTPlugInCompatibilityUUID\` `
 
-`defaults delete com.apple.dt.Xcode DVTPlugInManagerNonApplePlugIns-Xcode-6.4`
+2.Reset XCode 7.0 plugin load setting:
+
+`defaults delete com.apple.dt.Xcode DVTPlugInManagerNonApplePlugIns-Xcode-7.0`
